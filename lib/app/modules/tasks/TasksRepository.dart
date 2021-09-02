@@ -21,4 +21,10 @@ class TasksRepository {
     final tasks = taskFromJsonList(rawTasks);
     return tasks;
   }
+
+  Future<int> checkTask(TaskModel task) async {
+    final Database db = await this._databaseProvider.db();
+    final id = await db.update('tasks', task.toJson(), where: 'id=${task.id}');
+    return id;
+  }
 }

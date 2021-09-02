@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/tasks_controller.dart';
 
 class TasksPage extends StatelessWidget {
@@ -40,7 +41,7 @@ class TasksPage extends StatelessWidget {
       body: Container(
         child: Obx(() => ListView.builder(
               itemBuilder: (_, index) {
-                return Text(controller.pendingTasks[index].description);
+                return TaskWidget(task: controller.pendingTasks[index]);
               },
               itemCount: controller.pendingTasks.length,
             )),

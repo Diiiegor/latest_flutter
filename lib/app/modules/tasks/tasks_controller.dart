@@ -39,4 +39,10 @@ class TasksController extends GetxController {
     this.pendingTasks.addAll(tasksList);
     print(this.pendingTasks);
   }
+
+  checkTask(TaskModel task) async {
+    task.done = 1;
+    await this._tasksRepository.checkTask(task);
+    this.pendingTasks.removeWhere((element) => element.id == task.id);
+  }
 }
