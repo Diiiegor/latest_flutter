@@ -27,4 +27,12 @@ class TasksRepository {
     final id = await db.update('tasks', task.toJson(), where: 'id=${task.id}');
     return id;
   }
+
+  Future<List<TaskModel>> filter(String description) async {
+    final Database db = await this._databaseProvider.db();
+    final rawTasks = await db.query('tasks',
+        where: 'description like "%${description}%" and done=0');
+    final tasks = taskFromJsonList(rawTasks);
+    return tasks;
+  }
 }

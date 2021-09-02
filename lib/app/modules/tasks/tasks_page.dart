@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/filter_task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/tasks_controller.dart';
 
@@ -17,13 +18,22 @@ class TasksPage extends StatelessWidget {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Container(
-        child: Obx(() => ListView.builder(
-              itemBuilder: (_, index) {
-                return TaskWidget(task: controller.pendingTasks[index]);
-              },
-              itemCount: controller.pendingTasks.length,
-            )),
+      body: SafeArea(
+        child: Container(
+          child: Column(
+            children: [
+              FilterTaskWidget(),
+              Expanded(
+                  child: Obx(() => ListView.builder(
+                        itemBuilder: (_, index) {
+                          return TaskWidget(
+                              task: controller.pendingTasks[index]);
+                        },
+                        itemCount: controller.pendingTasks.length,
+                      )))
+            ],
+          ),
+        ),
       ),
     );
   }

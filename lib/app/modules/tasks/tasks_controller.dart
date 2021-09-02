@@ -69,7 +69,6 @@ class TasksController extends GetxController {
   getPendingTasks() async {
     final tasksList = await this._tasksRepository.getPendingTasks();
     this.pendingTasks.addAll(tasksList);
-    print(this.pendingTasks);
   }
 
   checkTask(TaskModel task) async {
@@ -117,6 +116,16 @@ class TasksController extends GetxController {
       this.updateTaskText = '';
       this.updateTaskController.text = '';
       Get.back();
+    }
+  }
+
+  filterTasks(description) async {
+    this.pendingTasks.clear();
+    if (description == '') {
+      this.getPendingTasks();
+    } else {
+      final filterTasks = await this._tasksRepository.filter(description);
+      this.pendingTasks.addAll(filterTasks);
     }
   }
 }
