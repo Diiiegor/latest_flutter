@@ -33,7 +33,9 @@ class TaskWidget extends StatelessWidget {
           ),
         ),
         trailing: CupertinoButton(
-          onPressed: () {},
+          onPressed: () {
+            controller.editTask(task);
+          },
           child: Icon(Icons.edit),
         ),
         title: Text(
