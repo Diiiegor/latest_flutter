@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/TaskModel.dart';
 import 'package:la_electronic/app/modules/tasks/TasksRepository.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/modalNewTask.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/modalUpdateTask.dart';
 
 class TasksController extends GetxController {
   late TasksRepository _tasksRepository;
@@ -23,47 +25,19 @@ class TasksController extends GetxController {
 
   onReady() {
     this.getPendingTasks();
-    this.newTaskController.text = taskDescription;
   }
 
   createTask() {
-    Get.defaultDialog(
-        confirm: TextButton(
-            onPressed: () {
-              this.saveTask();
-            },
-            child: Text("Guardar")),
-        title: "Nueva tarea",
-        content: Container(
-          child: Obx(() => TextField(
-                controller: this.newTaskController,
-                onChanged: (val) {
-                  this.taskDescription = val;
-                },
-                decoration: InputDecoration(
-                    errorText: this.inputValid.value
-                        ? null
-                        : "La descripcion es requerida",
-                    labelText: "Descripcion",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50))),
-              )),
-        ));
+    Get.defaultDialog(title: "Nueva tarea", content: ModalNewTask());
   }
 
-  saveTask() async {
-    if (this.taskDescription == '') {
+  bool validateNewTask() {
+    if (this.newTaskController.text == '') {
       this.inputValid.value = false;
     } else {
       this.inputValid.value = true;
-      final newTask = new TaskModel(description: this.taskDescription, done: 0);
-      final newTaskId = await this._tasksRepository.saveTask(newTask);
-      newTask.id = newTaskId;
-      this.pendingTasks.add(newTask);
-      this.taskDescription = '';
-      this.newTaskController.text = '';
-      Get.back();
     }
+    return this.inputValid.value;
   }
 
   getPendingTasks() async {
@@ -79,44 +53,24 @@ class TasksController extends GetxController {
 
   editTask(task) {
     this.updateTaskController.text = task.description;
-    this.updateTaskText = task.description;
     Get.defaultDialog(
-        confirm: TextButton(
-            onPressed: () {
-              this.updateTask(task);
-            },
-            child: Text("Editar tarea")),
-        title: "Editar tarea",
-        content: Container(
-          child: Obx(() => TextField(
-                controller: this.updateTaskController,
-                onChanged: (val) {
-                  this.updateTaskText = val;
-                },
-                decoration: InputDecoration(
-                    errorText: this.updateInputValid.value
-                        ? null
-                        : "La descripcion es requerida",
-                    labelText: "Descripcion",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50))),
-              )),
-        ));
+        title: "Editar tarea", content: ModalUpdateTask(task: task));
   }
 
-  updateTask(TaskModel task) async {
-    if (this.updateTaskText == '') {
+  bool validateEditTask() {
+    if (this.updateTaskController.text == '') {
       this.updateInputValid.value = false;
     } else {
       this.updateInputValid.value = true;
-      task.description = this.updateTaskText;
-      await this._tasksRepository.updateById(task);
-      this.pendingTasks[
-          pendingTasks.indexWhere((element) => element.id == task.id)] = task;
-      this.updateTaskText = '';
-      this.updateTaskController.text = '';
-      Get.back();
     }
+    return this.updateInputValid.value;
+  }
+
+  updateTask(TaskModel task) async {
+    task.description = updateTaskController.text;
+    await this._tasksRepository.updateById(task);
+    this.pendingTasks[
+        pendingTasks.indexWhere((element) => element.id == task.id)] = task;
   }
 
   filterTasks(description) async {
@@ -127,5 +81,12 @@ class TasksController extends GetxController {
       final filterTasks = await this._tasksRepository.filter(description);
       this.pendingTasks.addAll(filterTasks);
     }
+  }
+
+  storeTask(String description) async {
+    final newTask = new TaskModel(description: description, done: 0);
+    final newTaskId = await this._tasksRepository.saveTask(newTask);
+    newTask.id = newTaskId;
+    this.pendingTasks.add(newTask);
   }
 }

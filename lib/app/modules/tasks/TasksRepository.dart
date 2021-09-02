@@ -1,11 +1,16 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:la_electronic/app/modules/tasks/TaskModel.dart';
 import 'package:la_electronic/app/provider/database_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:io';
 
 class TasksRepository {
   late DatabaseProvider _databaseProvider;
+  Dio _dio;
 
-  TasksRepository(DatabaseProvider databaseProvider) {
+  TasksRepository(DatabaseProvider databaseProvider, this._dio) {
     this._databaseProvider = databaseProvider;
   }
 
@@ -34,5 +39,12 @@ class TasksRepository {
         where: 'description like "%${description}%" and done=0');
     final tasks = taskFromJsonList(rawTasks);
     return tasks;
+  }
+
+  Future<List<Map<String, dynamic>>> getRandomTasks(int limit) async {
+    final data =
+        await this._dio.get('/facts', queryParameters: {'limit': limit});
+    final facts = data.data;
+    return facts;
   }
 }
