@@ -9,6 +9,34 @@ class TasksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TasksController controller = Get.find<TasksController>();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Get.defaultDialog(
+              confirm: TextButton(
+                  onPressed: () {
+                    controller.saveTask();
+                  },
+                  child: Text("Guardar")),
+              title: "Nueva tarea",
+              content: Container(
+                child: Obx(() => TextField(
+                      controller: controller.newTaskController,
+                      onChanged: (val) {
+                        controller.taskDescription = val;
+                      },
+                      decoration: InputDecoration(
+                          errorText: controller.inputValid.value
+                              ? null
+                              : "La descripcion es requerida",
+                          labelText: "Descripcion",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50))),
+                    )),
+              ));
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(
         child: Obx(() => ListView.builder(
               itemBuilder: (_, index) {
