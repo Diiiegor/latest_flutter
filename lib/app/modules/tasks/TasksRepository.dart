@@ -47,4 +47,12 @@ class TasksRepository {
     final facts = data.data;
     return facts;
   }
+
+  Future<double> countByState(int done) async {
+    final Database db = await this._databaseProvider.db();
+    final total = await db
+        .rawQuery('SELECT COUNT(*) as total FROM tasks WHERE done=${done}');
+    final int count = total[0]['total'] as int;
+    return count + 0.0;
+  }
 }

@@ -8,10 +8,18 @@ class FilterTaskWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TasksController tasksController = Get.find<TasksController>();
-    return Container(child: TextField(
-      onChanged: (val) {
-        tasksController.filterTasks(val);
-      },
-    ));
+    return Container(
+        height: 40,
+        child: TextField(
+          decoration: InputDecoration(
+              suffixIcon: Icon(Icons.search),
+              filled: true,
+              labelText: "Buscar tareas",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
+          onChanged: (val) {
+            tasksController.filterTasks(val);
+          },
+        ));
   }
 }

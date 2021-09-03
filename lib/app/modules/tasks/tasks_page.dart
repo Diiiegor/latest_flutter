@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/filter_task_widget.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/header.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/new_task.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/tasks_controller.dart';
@@ -22,7 +23,7 @@ class TasksPage extends StatelessWidget {
                 height: constrains.maxHeight,
                 child: Column(
                   children: [
-                    FilterTaskWidget(),
+                    HeaderWidget(),
                     Expanded(
                         child: Container(
                       child: Column(

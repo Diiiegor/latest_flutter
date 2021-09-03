@@ -19,6 +19,8 @@ class TasksController extends GetxController {
   RxBool inputValid = true.obs;
   RxBool updateInputValid = true.obs;
   RxList<TaskModel> pendingTasks = RxList.empty();
+  RxDouble doneTasks = 0.0.obs;
+  RxDouble allTasks = 0.0.obs;
 
   TasksController(TasksRepository tasksRepository) {
     this._tasksRepository = tasksRepository;
@@ -26,6 +28,7 @@ class TasksController extends GetxController {
 
   onReady() {
     this.getPendingTasks();
+    this.updateProgress();
   }
 
   bool validateNewTask() {
@@ -45,6 +48,7 @@ class TasksController extends GetxController {
   checkTask(TaskModel task) async {
     task.done = 1;
     await this._tasksRepository.updateById(task);
+    this.updateProgress();
     update(['task_item']);
   }
 
@@ -86,5 +90,12 @@ class TasksController extends GetxController {
     final newTaskId = await this._tasksRepository.saveTask(newTask);
     newTask.id = newTaskId;
     this.pendingTasks.insert(0, newTask);
+    this.updateProgress();
+  }
+
+  updateProgress() async {
+    this.doneTasks.value = await this._tasksRepository.countByState(1);
+    this.allTasks.value =
+        await this._tasksRepository.countByState(0) + this.doneTasks.value;
   }
 }
