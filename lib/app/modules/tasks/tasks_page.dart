@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/filter_task_widget.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/new_task.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/tasks_controller.dart';
 
@@ -10,29 +11,42 @@ class TasksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TasksController controller = Get.find<TasksController>();
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          controller.createTask();
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(
         child: Container(
-          child: Column(
-            children: [
-              FilterTaskWidget(),
-              Expanded(
-                  child: Obx(() => ListView.builder(
-                        itemBuilder: (_, index) {
-                          return TaskWidget(
-                              task: controller.pendingTasks[index]);
-                        },
-                        itemCount: controller.pendingTasks.length,
-                      )))
-            ],
-          ),
+          child: LayoutBuilder(builder: (_, constrains) {
+            return SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                height: constrains.maxHeight,
+                child: Column(
+                  children: [
+                    FilterTaskWidget(),
+                    Expanded(
+                        child: Container(
+                      child: Column(
+                        children: [
+                          Expanded(
+                              child: Obx(() => ListView.builder(
+                                    controller: controller.listScrollController,
+                                    physics: BouncingScrollPhysics(),
+                                    key: controller.listKey,
+                                    itemCount: controller.pendingTasks.length,
+                                    itemBuilder: (_, index) {
+                                      return TaskWidget(
+                                          task: controller.pendingTasks[index]);
+                                    },
+                                  )))
+                        ],
+                      ),
+                    )),
+                    NewTask()
+                  ],
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );

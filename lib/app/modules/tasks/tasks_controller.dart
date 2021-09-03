@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/TaskModel.dart';
 import 'package:la_electronic/app/modules/tasks/TasksRepository.dart';
-import 'package:la_electronic/app/modules/tasks/internal_widgets/modalNewTask.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/modalUpdateTask.dart';
 
 class TasksController extends GetxController {
@@ -11,6 +10,8 @@ class TasksController extends GetxController {
 
   TextEditingController newTaskController = new TextEditingController();
   TextEditingController updateTaskController = new TextEditingController();
+  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  ScrollController listScrollController = new ScrollController();
 
   String taskDescription = '';
   String updateTaskText = '';
@@ -25,10 +26,6 @@ class TasksController extends GetxController {
 
   onReady() {
     this.getPendingTasks();
-  }
-
-  createTask() {
-    Get.defaultDialog(title: "Nueva tarea", content: ModalNewTask());
   }
 
   bool validateNewTask() {
@@ -48,7 +45,7 @@ class TasksController extends GetxController {
   checkTask(TaskModel task) async {
     task.done = 1;
     await this._tasksRepository.updateById(task);
-    this.pendingTasks.removeWhere((element) => element.id == task.id);
+    update(['task_item']);
   }
 
   editTask(task) {
@@ -71,6 +68,7 @@ class TasksController extends GetxController {
     await this._tasksRepository.updateById(task);
     this.pendingTasks[
         pendingTasks.indexWhere((element) => element.id == task.id)] = task;
+    update(['task_item']);
   }
 
   filterTasks(description) async {
@@ -87,6 +85,6 @@ class TasksController extends GetxController {
     final newTask = new TaskModel(description: description, done: 0);
     final newTaskId = await this._tasksRepository.saveTask(newTask);
     newTask.id = newTaskId;
-    this.pendingTasks.add(newTask);
+    this.pendingTasks.insert(0, newTask);
   }
 }

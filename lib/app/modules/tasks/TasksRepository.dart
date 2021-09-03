@@ -22,7 +22,7 @@ class TasksRepository {
 
   Future<List<TaskModel>> getPendingTasks() async {
     final Database db = await this._databaseProvider.db();
-    final rawTasks = await db.query('tasks', where: 'done=0');
+    final rawTasks = await db.query('tasks', orderBy: 'done ASC,id DESC');
     final tasks = taskFromJsonList(rawTasks);
     return tasks;
   }
@@ -35,8 +35,8 @@ class TasksRepository {
 
   Future<List<TaskModel>> filter(String description) async {
     final Database db = await this._databaseProvider.db();
-    final rawTasks = await db.query('tasks',
-        where: 'description like "%${description}%" and done=0');
+    final rawTasks =
+        await db.query('tasks', where: 'description like "%${description}%"');
     final tasks = taskFromJsonList(rawTasks);
     return tasks;
   }
