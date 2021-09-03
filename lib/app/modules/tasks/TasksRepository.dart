@@ -41,10 +41,10 @@ class TasksRepository {
     return tasks;
   }
 
-  Future<List<Map<String, dynamic>>> getRandomTasks(int limit) async {
+  Future<List<dynamic>> getRandomTasks(int limit) async {
     final data =
         await this._dio.get('/facts', queryParameters: {'limit': limit});
-    final facts = data.data;
+    final facts = data.data['data'];
     return facts;
   }
 

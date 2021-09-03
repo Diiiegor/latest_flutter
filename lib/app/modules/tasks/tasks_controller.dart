@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/TaskModel.dart';
 import 'package:la_electronic/app/modules/tasks/TasksRepository.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/modalUpdateTask.dart';
+import 'package:la_electronic/app/modules/tasks/internal_widgets/modal_generar.dart';
 
 class TasksController extends GetxController {
   late TasksRepository _tasksRepository;
 
   TextEditingController newTaskController = new TextEditingController();
   TextEditingController updateTaskController = new TextEditingController();
+  TextEditingController generateTaskController = new TextEditingController();
   GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   ScrollController listScrollController = new ScrollController();
 
@@ -18,6 +20,7 @@ class TasksController extends GetxController {
 
   RxBool inputValid = true.obs;
   RxBool updateInputValid = true.obs;
+  RxBool generateValidationInput = true.obs;
   RxList<TaskModel> pendingTasks = RxList.empty();
   RxDouble doneTasks = 0.0.obs;
   RxDouble allTasks = 0.0.obs;
@@ -38,6 +41,21 @@ class TasksController extends GetxController {
       this.inputValid.value = true;
     }
     return this.inputValid.value;
+  }
+
+  bool validateGenerateTask() {
+    final number = num.tryParse(this.generateTaskController.text);
+    if (number == null || number < 1) {
+      this.generateValidationInput.value = false;
+      return false;
+    }
+
+    if (this.generateTaskController.text == '') {
+      this.generateValidationInput.value = false;
+    } else {
+      this.generateValidationInput.value = true;
+    }
+    return this.generateValidationInput.value;
   }
 
   getPendingTasks() async {
@@ -97,5 +115,19 @@ class TasksController extends GetxController {
     this.doneTasks.value = await this._tasksRepository.countByState(1);
     this.allTasks.value =
         await this._tasksRepository.countByState(0) + this.doneTasks.value;
+  }
+
+  modalRandom() {
+    Get.defaultDialog(title: "Generar tareas", content: ModalGenerar());
+  }
+
+  generateRandomTasks(int limit) async {
+    final tasks = await this._tasksRepository.getRandomTasks(limit);
+    tasks.forEach((element) {
+      final task = element as Map<String, dynamic>;
+      this.storeTask(task['fact']);
+    });
+
+    this.generateTaskController.text = '';
   }
 }

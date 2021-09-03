@@ -37,7 +37,9 @@ class HeaderWidget extends StatelessWidget {
                     width: 15,
                   ),
                   ButtonPrimary(
-                      onTab: () {},
+                      onTab: () {
+                        controller.modalRandom();
+                      },
                       child: Icon(
                         Icons.shuffle,
                         color: Colors.white,
@@ -58,7 +60,7 @@ class HeaderWidget extends StatelessWidget {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Text(
-                      "${controller.doneTasks.value.round()}/${controller.allTasks.value.round()}.",
+                      "${controller.doneTasks.value.round()}/${controller.allTasks.value.round()}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,

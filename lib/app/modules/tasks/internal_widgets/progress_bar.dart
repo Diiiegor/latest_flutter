@@ -15,7 +15,7 @@ class ProgressBar extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Container(
             height: 10,
-            width: (percent * constrains.maxWidth) / 100,
+            width: (percent.isNaN ? 0 : percent * constrains.maxWidth) / 100,
             decoration: BoxDecoration(
                 color: Get.theme.primaryColor,
                 borderRadius: BorderRadius.circular(20)),

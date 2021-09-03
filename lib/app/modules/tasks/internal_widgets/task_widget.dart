@@ -32,7 +32,7 @@ class TaskWidget extends StatelessWidget {
                             width: 5,
                             color: task.done == 1
                                 ? Color(0xffBDBDBD)
-                                : Colors.primaries[Random().nextInt(20) %
+                                : Colors.primaries[Random(task.id).nextInt(20) %
                                     Colors.primaries.length]))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/filter_task_widget.dart';
 import 'package:la_electronic/app/modules/tasks/internal_widgets/header.dart';
@@ -25,23 +26,27 @@ class TasksPage extends StatelessWidget {
                   children: [
                     HeaderWidget(),
                     Expanded(
-                        child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                              child: Obx(() => ListView.builder(
-                                    controller: controller.listScrollController,
-                                    physics: BouncingScrollPhysics(),
-                                    key: controller.listKey,
-                                    itemCount: controller.pendingTasks.length,
-                                    itemBuilder: (_, index) {
-                                      return TaskWidget(
-                                          task: controller.pendingTasks[index]);
-                                    },
-                                  )))
-                        ],
-                      ),
-                    )),
+                        child: Obx(() => Container(
+                              child: controller.pendingTasks.length > 0
+                                  ? ListView.builder(
+                                      controller:
+                                          controller.listScrollController,
+                                      physics: BouncingScrollPhysics(),
+                                      key: controller.listKey,
+                                      itemCount: controller.pendingTasks.length,
+                                      itemBuilder: (_, index) {
+                                        return TaskWidget(
+                                            task:
+                                                controller.pendingTasks[index]);
+                                      },
+                                    )
+                                  : Container(
+                                      child: SvgPicture.asset(
+                                        'assets/empty-box.svg',
+                                        width: 100,
+                                      ),
+                                    ),
+                            ))),
                     NewTask()
                   ],
                 ),
